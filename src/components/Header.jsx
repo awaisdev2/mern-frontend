@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
-import { useAuth } from "../../hooks/auth";
+import { useAuth } from "../hooks/auth";
 
 const Header = () => {
   const { currentUser, userLogout } = useAuth();
   return (
-    <Navbar bg="light" expand="lg" fixed="top">
+    <Navbar bg="light" expand="lg">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           EcoNest
@@ -20,6 +20,9 @@ const Header = () => {
             </Nav.Link>
             <Nav.Link as={Link} to="/notes" active>
               Notes
+            </Nav.Link>
+            <Nav.Link as={Link} to="/expenses" active>
+              Expenses
             </Nav.Link>
             <NavDropdown title="EcoNest" id="basic-nav-dropdown">
               <NavDropdown.Item>{currentUser?.name}</NavDropdown.Item>

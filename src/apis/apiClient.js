@@ -1,16 +1,17 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api', // Replace with your API base URL
-  timeout: 10000, // Set a timeout for requests
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  timeout: 10000,
 });
 
 // Add request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Assuming you're storing token in localStorage
+    const user = localStorage.getItem('currentUser');
+    let token = JSON.parse(user);
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Attach token to headers
+      config.headers.Authorization = `Bearer ${token.token}`;
     }
     return config;
   },
@@ -22,7 +23,11 @@ apiClient.interceptors.request.use(
 // Add response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('currentUser');
+      window.location.href = '/auth';
+    }
     return Promise.reject(error);
   }
 );

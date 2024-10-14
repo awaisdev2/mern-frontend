@@ -6,3 +6,11 @@
   box-sizing: border-box;
   font-family: "Montserrat", sans-serif;
 }
+
+button:hover {
+  transition: all 0.3s ease;
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+}

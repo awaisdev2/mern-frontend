@@ -3,9 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import { useRegisterUser, useUserLogin } from "../../queries/auth";
+import { useAuth } from "../../hooks/auth";
 
 import "./auth.css";
-import { useAuth } from "../../hooks/auth";
 
 const validationSchemaSignUp = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -30,7 +30,7 @@ const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const { mutateAsync: registerUser } = useRegisterUser();
   const { mutateAsync: loginUser } = useUserLogin();
-  const {userLogin} = useAuth()
+  const { userLogin } = useAuth();
 
   const handleSignUpClick = () => {
     setIsSignUp(true);
@@ -92,8 +92,7 @@ const LoginPage = () => {
               onSubmit={async (values, { resetForm }) => {
                 try {
                   const response = await loginUser(values);
-                  console.log('response', response)
-                  userLogin(response.data)
+                  userLogin(response.data);
                   resetForm();
                 } catch (error) {
                   console.error(error);
@@ -202,8 +201,7 @@ const LoginPage = () => {
             onSubmit={async (values, { resetForm }) => {
               try {
                 const response = await loginUser(values);
-                console.log('response', response)
-                userLogin(response.data)
+                userLogin(response.data);
                 resetForm();
               } catch (error) {
                 console.error(error);

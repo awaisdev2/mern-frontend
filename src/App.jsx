@@ -5,12 +5,16 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 
-import { useAuth, AuthProvider } from "./hooks/auth";
+import { useAuth } from "./hooks/auth";
 import AuthIndex from "./pages/auth/AuthIndex";
 import HomeIndex from "./pages/home/HomeIndex";
 import NotesIndex from "./pages/notes/NotesIndex";
-import Header from "./components/header/Header";
+import ExpensesIndex from "./pages/expenses/ExpensesIndex";
+import Header from "./components/Header";
+
+import "./App.css";
 
 const LayoutWithHeader = ({ children }) => {
   const location = useLocation();
@@ -23,52 +27,39 @@ const LayoutWithHeader = ({ children }) => {
   );
 };
 
-const ProtectedRoute = ({ element }) => {
-  const { currentUser } = useAuth();
+const App = () => {
+  const { currentUser, loading } = useAuth();
 
-  if (!currentUser) {
-    return <Navigate to="/auth" />;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-between my-3">
+        <Spinner />
+        <p className="font-bold">Loading...</p>
+      </div>
+    );
   }
 
-  return element;
-};
-
-const PublicRoute = ({ element }) => {
-  const { currentUser } = useAuth();
-
-  if (currentUser) {
-    return <Navigate to="/" />;
-  }
-
-  return element;
-};
-
-function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <LayoutWithHeader>
-          <Routes>
-            <Route
-              path="/auth"
-              element={<PublicRoute element={<AuthIndex />} />}
-            />
-
-            <Route
-              path="/"
-              element={<ProtectedRoute element={<HomeIndex />} />}
-            />
-            <Route
-              path="/notes"
-              element={<ProtectedRoute element={<NotesIndex />} />}
-            />
-
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </LayoutWithHeader>
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <LayoutWithHeader>
+        <Routes>
+          {currentUser ? (
+            <>
+              <Route path="/" element={<HomeIndex />} />
+              <Route path="/notes" element={<NotesIndex />} />
+              <Route path="/expenses" element={<ExpensesIndex />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </>
+          ) : (
+            <>
+              <Route path="/auth" element={<AuthIndex />} />
+              <Route path="*" element={<Navigate to="/auth" />} />
+            </>
+          )}
+        </Routes>
+      </LayoutWithHeader>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
