@@ -10,12 +10,12 @@ export const getNote = async () => {
   return response.data || {};
 }
 
-export const updateNote = async (notesData) => {
-  const response = await apiClient.put('/notes', notesData);
+export const updateNote = async (noteId, notesData) => {
+  const response = await apiClient.put(`/notes/${noteId}`, notesData);
   return response.data || {};
 };
 
 export const deleteNote = async (noteId) => {
-  const response = await apiClient.delete('/notes', noteId);
+  const response = await apiClient.delete(`/notes/${noteId}`);
   return response.data || {};
 };

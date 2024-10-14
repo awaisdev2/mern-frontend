@@ -24,7 +24,7 @@ export const useGetNote = () => {
 export const useUpdateNote = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data) => notesApi.updateNote(data),
+    mutationFn: ({id, data}) => notesApi.updateNote(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["notes"],
@@ -36,7 +36,7 @@ export const useUpdateNote = () => {
 export const useDeleteNote = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data) => notesApi.deleteNote(data),
+    mutationFn: (id) => notesApi.deleteNote(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["notes"],

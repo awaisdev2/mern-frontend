@@ -2,49 +2,63 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-import { useCreateNote } from "../../../queries/notes";
+import { useCreateNote, useUpdateNote } from "../../../queries/notes";
 
-const NotesForm = ({setShowModal}) => {
-  const { mutateAsync: createNote } = useCreateNote();
+const NotesForm = ({ setShowModal, selectedNote, setSelectedNote }) => {
+  const { mutateAsync: createNote, isPending: isCreating } = useCreateNote();
+  const { mutateAsync: updateNote, isPending: isUpdating } = useUpdateNote();
 
   const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required"),
-    description: Yup.string().required("Content is required"),
+    title: Yup.string()
+      .max(70, "Title must be less than 70 characters")
+      .required("Title is required"),
+    description: Yup.string()
+      .max(200, "Description must be less than 200 characters")
+      .required("Description is required"),
   });
 
   return (
     <div className="notes-form">
       <Formik
         initialValues={{
-          title: "",
-          description: "",
+          title: selectedNote?.title || "",
+          description: selectedNote?.description || "",
         }}
         validationSchema={validationSchema}
         onSubmit={async (values, { resetForm }) => {
           try {
-            await createNote(values);
-            setShowModal(false)
+            if (selectedNote) {
+              await updateNote({ id: selectedNote.id, data: values });
+            } else {
+              await createNote(values);
+            }
+            setShowModal(false);
+            setSelectedNote(null);
             resetForm();
           } catch (error) {
             console.error("Error creating note:", error);
           }
         }}
       >
-        {({ values, isSubmitting }) => (
+        {({ values }) => (
           <Form>
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <Field
                 id="title"
                 name="title"
+                placeholder="Enter title..."
                 type="text"
                 className="form-control"
               />
-              <ErrorMessage
-                name="title"
-                component="div"
-                className="text-danger text-sm"
-              />
+              <div className="d-flex justify-content-between">
+                <ErrorMessage
+                  name="title"
+                  component="div"
+                  className="text-danger text-sm"
+                />
+                <small className="text-muted">{values.title.length}/70</small>
+              </div>
             </div>
 
             <div className="form-group mt-3">
@@ -52,13 +66,19 @@ const NotesForm = ({setShowModal}) => {
               <Field
                 as="textarea"
                 name="description"
+                placeholder="Enter description..."
                 className="form-control"
               />
-              <ErrorMessage
-                name="description"
-                component="div"
-                className="text-danger text-sm"
-              />
+              <div className="d-flex justify-content-between">
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  className="text-danger text-sm"
+                />
+                <small className="text-muted">
+                  {values.description.length}/200
+                </small>
+              </div>
             </div>
 
             <div className="d-flex justify-content-end mt-3">
@@ -66,12 +86,13 @@ const NotesForm = ({setShowModal}) => {
                 type="submit"
                 className="btn btn-dark"
                 disabled={
-                  isSubmitting ||
+                  isCreating ||
+                  isUpdating ||
                   values.title.trim() === "" ||
                   values.description.trim() === ""
                 }
               >
-                Create Note
+                {isCreating || isUpdating ? "Loading..." : "Submit"}
               </button>
             </div>
           </Form>

@@ -14,3 +14,15 @@ button:hover {
 button:disabled {
   cursor: not-allowed !important;
 }
+
+.text-sm {
+  font-size: 14px;
+}
+
+.h-fit {
+  height: fit-content;
+}
+
+.w-fit {
+  width: fit-content;
+}

@@ -192,11 +192,10 @@ const ExpensesCard = () => {
       <GenericModal
         show={showConfirmDelete}
         handleClose={() => setShowConfirmDelete(false)}
-        size={"lg"}
         title="Confirm Deletion"
       >
         <p>Are you sure you want to delete this expense?</p>
-        <div className="d-flex justify-content-end">
+        <div className="mt-3 d-flex justify-content-end">
           <Button
             variant="secondary"
             className="ms-2"
