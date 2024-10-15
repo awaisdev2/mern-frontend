@@ -15,14 +15,17 @@ const Header = () => {
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav>
-            <Nav.Link as={Link} to="/" active>
+            <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/notes" active>
+            <Nav.Link as={Link} to="/notes">
               Notes
             </Nav.Link>
-            <Nav.Link as={Link} to="/expenses" active>
+            <Nav.Link as={Link} to="/expenses">
               Expenses
+            </Nav.Link>
+            <Nav.Link as={Link} to="/todos">
+              Todos
             </Nav.Link>
             <NavDropdown title="EcoNest" id="basic-nav-dropdown">
               <NavDropdown.Item>{currentUser?.name}</NavDropdown.Item>

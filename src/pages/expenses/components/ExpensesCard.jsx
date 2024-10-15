@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useCallback, useEffect } from "react";
 import { Table, Card, Spinner, Form, Button } from "react-bootstrap";
 import { debounce } from "lodash";
@@ -90,6 +91,7 @@ const ExpensesCard = () => {
             />
           </Form.Group>
           <button
+            type="button"
             className="btn btn-outline-dark ms-2"
             onClick={() => setShowModal(true)}
           >

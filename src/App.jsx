@@ -9,10 +9,11 @@ import { Spinner } from "react-bootstrap";
 
 import { useAuth } from "./hooks/auth";
 import AuthIndex from "./pages/auth/AuthIndex";
+import Header from "./components/Header";
 import HomeIndex from "./pages/home/HomeIndex";
 import NotesIndex from "./pages/notes/NotesIndex";
 import ExpensesIndex from "./pages/expenses/ExpensesIndex";
-import Header from "./components/Header";
+import TodosIndex from "./pages/todos/TodosIndex";
 
 import "./App.css";
 
@@ -48,6 +49,7 @@ const App = () => {
               <Route path="/" element={<HomeIndex />} />
               <Route path="/notes" element={<NotesIndex />} />
               <Route path="/expenses" element={<ExpensesIndex />} />
+              <Route path="/todos" element={<TodosIndex />} />
               <Route path="*" element={<Navigate to="/" />} />
             </>
           ) : (
