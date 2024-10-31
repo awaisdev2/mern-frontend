@@ -1,20 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { Navbar, Nav, Dropdown } from "react-bootstrap";
 
 import { useAuth } from "../hooks/auth";
 
 const Header = () => {
   const { currentUser, userLogout } = useAuth();
+  const navigate = useNavigate();
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="transparent" expand="lg">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           EcoNest
         </Link>
         <Navbar.Toggle />
         <Navbar.Collapse>
-          <Nav>
+          <Nav className="align-items-center">
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
@@ -27,13 +28,22 @@ const Header = () => {
             <Nav.Link as={Link} to="/todos">
               Todos
             </Nav.Link>
-            <NavDropdown title="EcoNest" id="basic-nav-dropdown">
-              <NavDropdown.Item>{currentUser?.name}</NavDropdown.Item>
-              <NavDropdown.Item>{currentUser?.email}</NavDropdown.Item>
-              <NavDropdown.Item as="button" onClick={userLogout}>
-                Logout
-              </NavDropdown.Item>
-            </NavDropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="transparent" id="dropdown-basic">
+                <img
+                  className="img-round"
+                  src={currentUser?.user?.profileImage || "/assets/dummy.png"}
+                  alt="user-img"
+                />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => navigate("/user-profile")}>
+                  My Profile
+                </Dropdown.Item>
+                <Dropdown.Item onClick={userLogout}>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Nav>
         </Navbar.Collapse>
       </div>

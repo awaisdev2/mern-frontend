@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useDropzone } from "react-dropzone";
 
 import { useRegisterUser, useUserLogin } from "../../queries/auth";
 import { useAuth } from "../../hooks/auth";
@@ -28,9 +29,15 @@ const validationSchemaSignIn = Yup.object({
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const { mutateAsync: registerUser } = useRegisterUser();
   const { mutateAsync: loginUser } = useUserLogin();
   const { userLogin } = useAuth();
+
+  const onDrop = (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setProfileImage(file);
+  };
 
   const handleSignUpClick = () => {
     setIsSignUp(true);
@@ -38,6 +45,31 @@ const LoginPage = () => {
 
   const handleSignInClick = () => {
     setIsSignUp(false);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*",
+    multiple: false,
+  });
+
+  const handleSignUpSubmit = async (values, { resetForm }) => {
+    try {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('email', values.email);
+      formData.append('password', values.password);
+      if (profileImage) {
+        formData.append('profileImage', profileImage);
+      }
+
+      await registerUser(formData);
+      resetForm();
+      setProfileImage(null);
+      setIsSignUp(false)
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -52,17 +84,10 @@ const LoginPage = () => {
             <Formik
               initialValues={{ name: "", email: "", password: "" }}
               validationSchema={validationSchemaSignUp}
-              onSubmit={async (values, { resetForm }) => {
-                try {
-                  await registerUser(values);
-                  resetForm();
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
+              onSubmit={handleSignUpSubmit}
             >
               <Form>
-                <h1>Create Account</h1>
+                <h2>Create Account</h2>
                 <Field type="text" name="name" placeholder="Name" />
                 <ErrorMessage
                   name="name"
@@ -81,6 +106,13 @@ const LoginPage = () => {
                   component="div"
                   className="text-danger text-sm"
                 />
+                <div {...getRootProps({ className: "dropzone" })}>
+                  <input {...getInputProps()} />
+                  <p>
+                    Drag & drop a profile image here, or click to select one
+                  </p>
+                </div>
+                {profileImage && <p>Selected Image: {profileImage.name}</p>}
                 <button type="submit">Sign Up</button>
               </Form>
             </Formik>
@@ -156,14 +188,7 @@ const LoginPage = () => {
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             validationSchema={validationSchemaSignUp}
-            onSubmit={async (values, { resetForm }) => {
-              try {
-                await registerUser(values);
-                resetForm();
-              } catch (error) {
-                console.error(error);
-              }
-            }}
+            onSubmit={handleSignUpSubmit}
           >
             <Form className="mobile-form">
               <h1 className="mb-3">Create Account</h1>
@@ -185,6 +210,11 @@ const LoginPage = () => {
                 component="div"
                 className="text-danger text-sm"
               />
+              <div {...getRootProps({ className: "dropzone" })}>
+                <input {...getInputProps()} />
+                <p>Drag & drop a profile image here, or click to select one</p>
+              </div>
+              {profileImage && <p>Selected Image: {profileImage.name}</p>}
               <button type="submit">Sign Up</button>
               <button
                 onClick={handleSignInClick}
