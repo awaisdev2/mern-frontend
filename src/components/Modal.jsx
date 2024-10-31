@@ -22,7 +22,7 @@ const GenericModal = ({
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="dark" onClick={handleClose}>
             Save Changes
           </Button>
         </Modal.Footer>

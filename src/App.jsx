@@ -14,6 +14,7 @@ import HomeIndex from "./pages/home/HomeIndex";
 import NotesIndex from "./pages/notes/NotesIndex";
 import ExpensesIndex from "./pages/expenses/ExpensesIndex";
 import TodosIndex from "./pages/todos/TodosIndex";
+import UserProfileIndex from "./pages/profile/UserProfileIndex";
 
 import "./App.css";
 
@@ -50,6 +51,7 @@ const App = () => {
               <Route path="/notes" element={<NotesIndex />} />
               <Route path="/expenses" element={<ExpensesIndex />} />
               <Route path="/todos" element={<TodosIndex />} />
+              <Route path="/user-profile" element={<UserProfileIndex />} />
               <Route path="*" element={<Navigate to="/" />} />
             </>
           ) : (
