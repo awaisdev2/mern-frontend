@@ -3,7 +3,7 @@ import ExpensesCard from './components/ExpensesCard'
 
 const ExpensesIndex = () => {
   return (
-    <div>
+    <div className='nav-height'>
       <ExpensesCard />
     </div>
   )

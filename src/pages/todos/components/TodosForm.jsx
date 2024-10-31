@@ -120,7 +120,7 @@ const TodosForm = ({ setShowModal, selectedTodo, setSelectedTodo }) => {
               </Row>
 
               <div className="d-flex justify-content-end">
-                <Button variant="primary" type="submit">
+                <Button variant="dark" type="submit">
                   {selectedTodo ? "Update Todo" : "Create Todo"}
                 </Button>
               </div>

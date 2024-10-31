@@ -4,7 +4,7 @@ import NotesCard from './components/NotesCard'
 
 const NotesIndex = () => {
   return (
-    <div>
+    <div className='nav-height'>
       <NotesCard />
     </div>
   )

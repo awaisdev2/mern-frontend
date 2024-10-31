@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 const HomeIndex = () => {
   return (
-    <div className="container-fluid bg-light text-center py-5">
+    <div className="container-fluid bg-transparent text-center py-5">
       <div
         className="row justify-content-center align-items-center"
-        style={{ height: "78vh" }}
+        style={{ height: "76.7vh" }}
       >
         <div className="col-md-8">
           <h1 className="display-4 fw-bold">

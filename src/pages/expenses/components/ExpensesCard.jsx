@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useCallback, useEffect } from "react";
-import { Table, Card, Spinner, Form, Button } from "react-bootstrap";
+import { Table, Card, Form, Button } from "react-bootstrap";
 import { debounce } from "lodash";
 
 import { useGetExpenses, useDeleteExpense } from "../../../queries/expenses";
 import GenericModal from "../../../components/Modal";
 import ExpensesForm from "./ExpensesForm";
+import Loading from "../../../components/Loading";
 
 const currencySymbols = {
   dollar: "$",
@@ -82,14 +83,17 @@ const ExpensesCard = () => {
       <div className="d-flex justify-content-between align-items-start">
         <h3>Your Expenses</h3>
         <Form className="mt-3 d-flex">
-          <Form.Group controlId="search">
-            <Form.Control
-              type="text"
-              placeholder="Search by category"
-              value={search}
-              onChange={handleSearchChange}
-            />
-          </Form.Group>
+          {!isFetching && expenses?.data?.length > 0 && (
+            <Form.Group controlId="search">
+              <Form.Control
+                type="text"
+                placeholder="Search by category"
+                className="border border-1 border-black"
+                value={search}
+                onChange={handleSearchChange}
+              />
+            </Form.Group>
+          )}
           <button
             type="button"
             className="btn btn-outline-dark ms-2"
@@ -100,18 +104,13 @@ const ExpensesCard = () => {
         </Form>
       </div>
 
-      {isFetching && (
-        <div className="d-flex justify-content-between my-3">
-          <Spinner />
-          <p className="font-bold">Loading...</p>
-        </div>
+      {isFetching && <Loading />}
+      {!isFetching && expenses?.data?.length < 1 && (
+        <p className="m-2">No Expenses Available!</p>
       )}
 
-      <Card className="mt-4 shadow">
-        {!isFetching && expenses?.data?.length < 1 && (
-          <p className="m-2">No Expenses Available!</p>
-        )}
-        {!isFetching && expenses?.data?.length > 0 && (
+      {!isFetching && expenses?.data?.length > 0 && (
+        <Card className="mt-4 shadow">
           <>
             <Card.Header>
               <h5>
@@ -150,7 +149,7 @@ const ExpensesCard = () => {
                       <td>{expense.description || "N/A"}</td>
                       <td>
                         <Button
-                          variant="outline-primary"
+                          variant="outline-dark"
                           onClick={() => handleEdit(expense)}
                         >
                           Edit
@@ -172,8 +171,8 @@ const ExpensesCard = () => {
               </Table>
             </Card.Body>
           </>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <GenericModal
         show={showModal}

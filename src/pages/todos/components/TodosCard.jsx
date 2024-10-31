@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useCallback, useEffect } from "react";
-import { Table, Card, Spinner, Form, Button, Badge } from "react-bootstrap";
+import { Table, Card, Form, Button, Badge } from "react-bootstrap";
 import { debounce } from "lodash";
 
 import { useGetTodo, useDeleteTodo } from "../../../queries/todos";
 import GenericModal from "../../../components/Modal";
 import TodosForm from "./TodosForm";
+import Loading from "../../../components/Loading";
 
 const TodosCard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -63,14 +64,17 @@ const TodosCard = () => {
       <div className="d-flex justify-content-between align-items-start">
         <h3>Your Todos</h3>
         <Form className="mt-3 d-flex">
-          <Form.Group controlId="search">
-            <Form.Control
-              type="text"
-              placeholder="Search by title"
-              value={search}
-              onChange={handleSearchChange}
-            />
-          </Form.Group>
+          {!isFetching && sortedTodos?.length > 0 && (
+            <Form.Group controlId="search">
+              <Form.Control
+                type="text"
+                placeholder="Search by title"
+                className="border border-1 border-black"
+                value={search}
+                onChange={handleSearchChange}
+              />
+            </Form.Group>
+          )}
           <button
             type="button"
             className="btn btn-outline-dark ms-2"
@@ -81,18 +85,13 @@ const TodosCard = () => {
         </Form>
       </div>
 
-      {isFetching && (
-        <div className="d-flex justify-content-between my-3">
-          <Spinner />
-          <p className="font-bold">Loading...</p>
-        </div>
+      {isFetching && <Loading />}
+      {!isFetching && sortedTodos?.length < 1 && (
+        <p className="m-2">No Todos Available!</p>
       )}
 
-      <Card className="mt-4 shadow">
-        {!isFetching && sortedTodos?.length === 0 && (
-          <p className="m-2">No Todos Available!</p>
-        )}
-        {!isFetching && sortedTodos?.length > 0 && (
+      {!isFetching && sortedTodos?.length > 0 && (
+        <Card className="mt-4 shadow">
           <Card.Body>
             <Table striped bordered hover responsive>
               <thead>
@@ -106,8 +105,12 @@ const TodosCard = () => {
               <tbody>
                 {sortedTodos.map((todo) => (
                   <tr key={todo.id}>
-                    <td className={`${todo.priority && "bg-warning-subtle"}`}>{todo.title}</td>
-                    <td className={`${todo.priority && "bg-warning-subtle"}`}>{todo.description || "N/A"}</td>
+                    <td className={`${todo.priority && "bg-warning-subtle"}`}>
+                      {todo.title}
+                    </td>
+                    <td className={`${todo.priority && "bg-warning-subtle"}`}>
+                      {todo.description || "N/A"}
+                    </td>
                     <td className={`${todo.priority && "bg-warning-subtle"}`}>
                       {todo.isCompleted ? (
                         <Badge bg="secondary">Completed</Badge>
@@ -117,7 +120,7 @@ const TodosCard = () => {
                     </td>
                     <td className={`${todo.priority && "bg-warning-subtle"}`}>
                       <Button
-                        variant="outline-primary"
+                        variant="outline-dark"
                         className="ms-2"
                         onClick={() => handleEdit(todo)}
                       >
@@ -139,8 +142,8 @@ const TodosCard = () => {
               </tbody>
             </Table>
           </Card.Body>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <GenericModal
         show={showModal}

@@ -3,7 +3,7 @@ import TodosCard from './components/TodosCard';
 
 const TodosIndex = () => {
   return (
-    <div>
+    <div className='nav-height'>
       <TodosCard />
     </div>
   );

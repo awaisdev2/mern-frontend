@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Spinner, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 import GenericModal from "../../../components/Modal";
 import NotesForm from "./NotesForm";
 import { useGetNote, useDeleteNote } from "../../../queries/notes";
+import Loading from "../../../components/Loading";
 
 const NotesCard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -42,18 +43,17 @@ const NotesCard = () => {
       </div>
 
       <div>
-        {isFetching && (
-          <div className="d-flex justify-content-between my-3">
-            <Spinner />
-            <p className="font-bold">Loading...</p>
-          </div>
+        {isFetching && <Loading />}
+
+        {!isFetching && notesData?.data?.length < 1 && (
+          <p className="m-2">No Notes Available!</p>
         )}
 
         {!isFetching &&
           notesData?.data?.map((note) => (
             <div
               key={note?.id}
-              className="d-flex justify-content-between align-items-center border my-3 p-3 rounded"
+              className="d-flex justify-content-between bg-light align-items-center border my-3 p-3 rounded"
             >
               <div>
                 <h3>{note.title}</h3>
@@ -65,7 +65,7 @@ const NotesCard = () => {
               </div>
               <div className="d-flex">
                 <button
-                  className="btn btn-sm btn-outline-primary ms-2 h-fit"
+                  className="btn btn-sm btn-outline-dark ms-2 h-fit"
                   onClick={() => handleEdit(note)}
                 >
                   Edit
