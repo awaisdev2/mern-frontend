@@ -27,7 +27,7 @@ const ExpensesCard = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const { data: expenses, isFetching } = useGetExpenses(debouncedSearch);
-  const { mutateAsync: deleteExpense } = useDeleteExpense();
+  const { mutateAsync: deleteExpense, isPending } = useDeleteExpense();
 
   const handleDelete = async () => {
     if (expenseToDelete) {
@@ -80,24 +80,22 @@ const ExpensesCard = () => {
 
   return (
     <div className="p-5">
-      <div className="d-flex justify-content-between align-items-start">
+      <div className="d-flex justify-content-between align-items-center flex-wrap manager-header">
         <h3>Your Expenses</h3>
         <Form className="mt-3 d-flex">
-          <Form.Group controlId="search">
-            <Form.Control
-              type="text"
-              placeholder="Search by category"
-              className="border border-1 border-black"
-              value={search}
-              onChange={handleSearchChange}
-            />
-          </Form.Group>
+          <Form.Control
+            type="text"
+            placeholder="Search by category"
+            className="border border-1 border-black"
+            value={search}
+            onChange={handleSearchChange}
+          />
           <button
             type="button"
-            className="btn btn-outline-dark ms-2"
+            className="btn btn-outline-dark ms-2 p-2"
             onClick={() => setShowModal(true)}
           >
-            Create an expense
+            <i className="fa-solid fa-plus"></i>
           </button>
         </Form>
       </div>
@@ -198,12 +196,13 @@ const ExpensesCard = () => {
           <Button
             variant="secondary"
             className="ms-2"
+            disabled={isPending}
             onClick={() => setShowConfirmDelete(false)}
           >
             Cancel
           </Button>
-          <Button variant="danger" className="ms-2" onClick={handleDelete}>
-            Delete
+          <Button variant="danger" disabled={isPending} className="ms-2" onClick={handleDelete}>
+            {isPending ? 'Loading...' : 'Delete'}
           </Button>
         </div>
       </GenericModal>

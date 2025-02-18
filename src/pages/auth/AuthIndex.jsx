@@ -30,8 +30,10 @@ const validationSchemaSignIn = Yup.object({
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const { mutateAsync: registerUser } = useRegisterUser();
-  const { mutateAsync: loginUser } = useUserLogin();
+  const [registeredCredentials, setRegisteredCredentials] = useState(null);
+  const { mutateAsync: registerUser, isPending: isRegistering } =
+    useRegisterUser();
+  const { mutateAsync: loginUser, isPending } = useUserLogin();
   const { userLogin } = useAuth();
 
   const onDrop = (acceptedFiles) => {
@@ -56,17 +58,22 @@ const LoginPage = () => {
   const handleSignUpSubmit = async (values, { resetForm }) => {
     try {
       const formData = new FormData();
-      formData.append('name', values.name);
-      formData.append('email', values.email);
-      formData.append('password', values.password);
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
       if (profileImage) {
-        formData.append('profileImage', profileImage);
+        formData.append("profileImage", profileImage);
       }
 
       await registerUser(formData);
       resetForm();
       setProfileImage(null);
-      setIsSignUp(false)
+      setIsSignUp(false);
+      // Store credentials for login form
+      setRegisteredCredentials({
+        email: values.email,
+        password: values.password
+      });
     } catch (error) {
       console.error(error);
     }
@@ -106,30 +113,54 @@ const LoginPage = () => {
                   component="div"
                   className="text-danger text-sm"
                 />
-                <div {...getRootProps({ className: "dropzone" })}>
+                {!profileImage && <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
                   <input {...getInputProps()} />
                   <p>
                     Drag & drop a profile image here, or click to select one
                   </p>
-                </div>
-                {profileImage && <p>Selected Image: {profileImage.name}</p>}
-                <button type="submit">Sign Up</button>
+                </div>}
+                {profileImage && (
+                  <div>
+                    <img
+                      src={URL.createObjectURL(profileImage)}
+                      alt="Profile preview"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        borderRadius: "20px",
+                        position: 'relative',
+                      }}
+                    />
+                    <span
+                      className="position-absolute cursor-pointer"
+                      onClick={() => setProfileImage(null)}
+                    >
+                      <i className="fa-solid fa-xmark"></i>
+                    </span>
+                  </div>
+                )}
+                <button type="submit" disabled={isRegistering}>
+                  {isRegistering ? "Loading..." : "Sign Up"}
+                </button>
               </Form>
             </Formik>
           </div>
           <div className="form-container sign-in">
             <Formik
-              initialValues={{ email: "", password: "" }}
+              initialValues={registeredCredentials || { email: "", password: "" }}
               validationSchema={validationSchemaSignIn}
               onSubmit={async (values, { resetForm }) => {
                 try {
                   const response = await loginUser(values);
                   userLogin(response.data);
                   resetForm();
+                  setRegisteredCredentials(null);
                 } catch (error) {
                   console.error(error);
                 }
               }}
+              enableReinitialize
             >
               <Form>
                 <h1>Sign In</h1>
@@ -145,8 +176,9 @@ const LoginPage = () => {
                   component="div"
                   className="text-danger text-sm"
                 />
-                <a href="/">Forget Your Password?</a>
-                <button type="submit">Sign In</button>
+                <button type="submit" disabled={isPending}>
+                  {isPending ? "Loading..." : "Sign In"}
+                </button>
               </Form>
             </Formik>
           </div>
@@ -159,6 +191,7 @@ const LoginPage = () => {
                   className="hidden"
                   id="login"
                   onClick={handleSignInClick}
+                  disabled={isRegistering}
                 >
                   Sign In
                 </button>
@@ -173,6 +206,7 @@ const LoginPage = () => {
                   className="hidden"
                   id="register"
                   onClick={handleSignUpClick}
+                  disabled={isPending}
                 >
                   Sign Up
                 </button>
@@ -210,15 +244,18 @@ const LoginPage = () => {
                 component="div"
                 className="text-danger text-sm"
               />
-              <div {...getRootProps({ className: "dropzone" })}>
+              <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
                 <input {...getInputProps()} />
                 <p>Drag & drop a profile image here, or click to select one</p>
               </div>
               {profileImage && <p>Selected Image: {profileImage.name}</p>}
-              <button type="submit">Sign Up</button>
+              <button type="submit" disabled={isRegistering}>
+                {isRegistering ? "Loading..." : "Sign Up"}
+              </button>
               <button
                 onClick={handleSignInClick}
                 className="mt-3 bg-transparent text-dark text-decoration-underline"
+                disabled={isRegistering}
               >
                 Already have an account?
               </button>
@@ -226,17 +263,19 @@ const LoginPage = () => {
           </Formik>
         ) : (
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={registeredCredentials || { email: "", password: "" }}
             validationSchema={validationSchemaSignIn}
             onSubmit={async (values, { resetForm }) => {
               try {
                 const response = await loginUser(values);
                 userLogin(response.data);
                 resetForm();
+                setRegisteredCredentials(null);
               } catch (error) {
                 console.error(error);
               }
             }}
+            enableReinitialize
           >
             <Form className="mobile-form">
               <h1 className="mb-3">Sign In</h1>
@@ -252,9 +291,12 @@ const LoginPage = () => {
                 component="div"
                 className="text-danger text-sm"
               />
-              <button type="submit">Sign In</button>
+              <button type="submit" disabled={isPending}>
+                {isPending ? "Loading..." : "Sign In"}
+              </button>
               <button
                 onClick={handleSignUpClick}
+                disabled={isPending}
                 className="mt-3 bg-transparent text-dark text-decoration-underline"
               >
                 Don't have an account?

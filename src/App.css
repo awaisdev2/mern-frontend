@@ -58,3 +58,7 @@ button:disabled {
 .nav-height {
   height: calc(100vh - 70px);
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

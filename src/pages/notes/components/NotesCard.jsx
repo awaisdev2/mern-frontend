@@ -12,7 +12,7 @@ const NotesCard = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState(null);
   const { data: notesData, isFetching } = useGetNote();
-  const { mutateAsync: deleteNote } = useDeleteNote();
+  const { mutateAsync: deleteNote, isPending } = useDeleteNote();
 
   const handleDelete = async () => {
     if (noteToDelete) {
@@ -108,12 +108,13 @@ const NotesCard = () => {
           <Button
             variant="secondary"
             className="ms-2"
+            disabled={isPending}
             onClick={() => setShowConfirmDelete(false)}
           >
             Cancel
           </Button>
-          <Button variant="danger" className="ms-2" onClick={handleDelete}>
-            Delete
+          <Button variant="danger" disabled={isPending} className="ms-2" onClick={handleDelete}>
+            {isPending ? 'Loading...' : 'Delete'}
           </Button>
         </div>
       </GenericModal>
