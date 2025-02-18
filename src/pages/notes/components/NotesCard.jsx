@@ -52,7 +52,7 @@ const NotesCard = () => {
         {!isFetching &&
           notesData?.data?.map((note) => (
             <div
-              key={note?.id}
+              key={note?._id}
               className="d-flex justify-content-between bg-light align-items-center border my-3 p-3 rounded"
             >
               <div>
@@ -73,7 +73,7 @@ const NotesCard = () => {
                 <button
                   className="btn btn-sm btn-outline-danger ms-2 h-fit"
                   onClick={() => {
-                    setNoteToDelete(note.id);
+                    setNoteToDelete(note._id);
                     setShowConfirmDelete(true);
                   }}
                 >

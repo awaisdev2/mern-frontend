@@ -83,17 +83,15 @@ const ExpensesCard = () => {
       <div className="d-flex justify-content-between align-items-start">
         <h3>Your Expenses</h3>
         <Form className="mt-3 d-flex">
-          {!isFetching && expenses?.data?.length > 0 && (
-            <Form.Group controlId="search">
-              <Form.Control
-                type="text"
-                placeholder="Search by category"
-                className="border border-1 border-black"
-                value={search}
-                onChange={handleSearchChange}
-              />
-            </Form.Group>
-          )}
+          <Form.Group controlId="search">
+            <Form.Control
+              type="text"
+              placeholder="Search by category"
+              className="border border-1 border-black"
+              value={search}
+              onChange={handleSearchChange}
+            />
+          </Form.Group>
           <button
             type="button"
             className="btn btn-outline-dark ms-2"
@@ -135,7 +133,7 @@ const ExpensesCard = () => {
                 </thead>
                 <tbody>
                   {expenses?.data?.map((expense) => (
-                    <tr key={expense.id}>
+                    <tr key={expense._id}>
                       <td>{expense.amount.toFixed(2)}</td>
                       <td>
                         {currencySymbols[expense.currency] || expense.currency}
@@ -158,7 +156,7 @@ const ExpensesCard = () => {
                           variant="outline-danger"
                           className="ms-2"
                           onClick={() => {
-                            setExpenseToDelete(expense.id);
+                            setExpenseToDelete(expense._id);
                             setShowConfirmDelete(true);
                           }}
                         >

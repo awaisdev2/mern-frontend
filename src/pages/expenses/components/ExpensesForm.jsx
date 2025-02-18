@@ -70,7 +70,7 @@ const ExpensesForm = ({
             try {
               if (selectedExpense) {
                 console.log('values', values)
-                await updateExpense({ id: selectedExpense?.id, data: values });
+                await updateExpense({ id: selectedExpense?._id, data: values });
               } else {
                 await createExpense(values);
               }

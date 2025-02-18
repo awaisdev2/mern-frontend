@@ -28,7 +28,7 @@ const NotesForm = ({ setShowModal, selectedNote, setSelectedNote }) => {
         onSubmit={async (values, { resetForm }) => {
           try {
             if (selectedNote) {
-              await updateNote({ id: selectedNote.id, data: values });
+              await updateNote({ id: selectedNote?._id, data: values });
             } else {
               await createNote(values);
             }

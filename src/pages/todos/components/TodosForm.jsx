@@ -38,7 +38,7 @@ const TodosForm = ({ setShowModal, selectedTodo, setSelectedTodo }) => {
           onSubmit={async (values, { resetForm }) => {
             try {
               if (selectedTodo) {
-                await updateTodo({ id: selectedTodo?.id, data: values });
+                await updateTodo({ id: selectedTodo?._id, data: values });
               } else {
                 await createTodo(values);
               }

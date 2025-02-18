@@ -36,7 +36,7 @@ const UserProfileIndex = () => {
         formData.append("profileImage", newProfileImage);
       }
       const updatedUser = await updateProfile({
-        userId: user?.user.id,
+        userId: user?.user._id,
         data: formData,
       });
 

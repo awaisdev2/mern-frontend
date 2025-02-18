@@ -64,17 +64,15 @@ const TodosCard = () => {
       <div className="d-flex justify-content-between align-items-start">
         <h3>Your Todos</h3>
         <Form className="mt-3 d-flex">
-          {!isFetching && sortedTodos?.length > 0 && (
-            <Form.Group controlId="search">
-              <Form.Control
-                type="text"
-                placeholder="Search by title"
-                className="border border-1 border-black"
-                value={search}
-                onChange={handleSearchChange}
-              />
-            </Form.Group>
-          )}
+          <Form.Group controlId="search">
+            <Form.Control
+              type="text"
+              placeholder="Search by title"
+              className="border border-1 border-black"
+              value={search}
+              onChange={handleSearchChange}
+            />
+          </Form.Group>
           <button
             type="button"
             className="btn btn-outline-dark ms-2"
@@ -104,7 +102,7 @@ const TodosCard = () => {
               </thead>
               <tbody>
                 {sortedTodos.map((todo) => (
-                  <tr key={todo.id}>
+                  <tr key={todo._id}>
                     <td className={`${todo.priority && "bg-warning-subtle"}`}>
                       {todo.title}
                     </td>
@@ -130,7 +128,7 @@ const TodosCard = () => {
                         variant="outline-danger"
                         className="ms-2"
                         onClick={() => {
-                          setTodoToDelete(todo.id);
+                          setTodoToDelete(todo._id);
                           setShowConfirmDelete(true);
                         }}
                       >
