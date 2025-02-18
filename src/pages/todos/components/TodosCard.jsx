@@ -63,7 +63,7 @@ const TodosCard = () => {
     <div className="p-5">
       <div className="d-flex justify-content-between align-items-center flex-wrap manager-header">
         <h3>Your Todos</h3>
-        <Form className="mt-3 d-flex flex-wrap">
+        <Form className="mt-3 d-flex">
           <Form.Group controlId="search">
             <Form.Control
               type="text"
